@@ -176,7 +176,7 @@ class Client:
 			auth = search.group(2)
 			if auth:
 				proxy_auth = auth[:-1].split(':')
-				print(proxy_auth)
+				# print(proxy_auth)
 				if len(proxy_auth)==1:
 					proxy_auth.append('')
 			proxy_host = search.group(3)
