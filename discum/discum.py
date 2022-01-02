@@ -143,6 +143,7 @@ class Client:
 	'''
 	switch proxy
 	'''
+
 	def switchProxy(self, newProxy, updateGateway=True):
 		if newProxy is None:
 			self.s.proxies = {}
@@ -162,6 +163,9 @@ class Client:
 		#proxy type(s)
 		regex_prox = r'(http|https|socks4|socks4a|socks5|socks5h)?(?::\/\/)?(\w+(?::\w+)?@)?((?:\d{1,3})(?:\.\d{1,3}){3})(?::(\d{1,5}))'
 		search = re.search(regex_prox, newProxy)
+		print()
+		print(search)
+		print()
 		if search:
 			proxy_type = true_type = search.group(1)
 			if not proxy_type:
@@ -172,20 +176,25 @@ class Client:
 			auth = search.group(2)
 			if auth:
 				proxy_auth = auth[:-1].split(':')
+				print(proxy_auth)
 				if len(proxy_auth)==1:
 					proxy_auth.append('')
 			proxy_host = search.group(3)
 			proxy_port = search.group(4)
 
 			#proxy updating
-			proxies = {t:'{}://{}:{}'.format(t, proxy_host, proxy_port) for t in proxy_type}
-
+			# proxies = {t:'{}://{}:{}'.format(t, proxy_host, proxy_port) for t in proxy_type}
+			proxy_logins= 'http://' + proxy_auth[0] + ':' + proxy_auth[1] + '@' + proxy_host + ':' + proxy_port
+			proxies = {
+                'https' : proxy_logins,
+                'http' : proxy_logins
+            }
+			print(proxies)
 			self.s.proxies.update(proxies)
 			if auth:
 				self.s.auth = requests.auth.HTTPProxyAuth(*proxy_auth)
 			else:
 				self.s.auth = None
-
 			if updateGateway:
 				self.gateway.sessionobj = self.s
 				self.gateway.proxy_type = true_type
@@ -195,7 +204,6 @@ class Client:
 					self.gateway.proxy_auth = (self.s.auth.username, self.s.auth.password)
 				else:
 					self.gateway.proxy_auth = None
-
 
 	'''
 	discord snowflake to unix timestamp and back
@@ -321,8 +329,8 @@ class Client:
 		return imports.Messages(self.discord, self.s, self.log).deleteMessage(channelID, messageID)
 
 	#edit message
-	def editMessage(self, channelID, messageID, newMessage="", newEmbed=None):
-		return imports.Messages(self.discord, self.s, self.log).editMessage(channelID, messageID, newMessage, newEmbed)
+	def editMessage(self, channelID, messageID, newMessage):
+		return imports.Messages(self.discord, self.s, self.log).editMessage(channelID, messageID, newMessage)
 
 	#pin message
 	def pinMessage(self, channelID, messageID):
