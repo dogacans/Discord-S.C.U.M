@@ -189,7 +189,7 @@ class Client:
                 'https' : proxy_logins,
                 'http' : proxy_logins
             }
-			print(proxies)
+			# print(proxies)
 			self.s.proxies.update(proxies)
 			if auth:
 				self.s.auth = requests.auth.HTTPProxyAuth(*proxy_auth)
